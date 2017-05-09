@@ -9,19 +9,13 @@ namespace SimpleInterpreter.Core
     public static class Extensions
     {
         /// <summary>
-        /// Strips all whitespace from a string.
+        /// Checks a char to see if it's set to null.
         /// </summary>
-        /// <param name="s">String to strip whitespace from.</param>
-        /// <returns>Whitespaceless string.</returns>
-        /// <remarks>Returns original string if null or empty.</remarks>
-        public static string StripWhiteSpace(this string s)
+        /// <param name="c">Char to check.</param>
+        /// <returns>bool indicating if null or not.</returns>
+        public static bool IsNull(this char c)
         {
-            if (string.IsNullOrEmpty(s))
-            {
-                return s;
-            }
-
-            return s.Replace(" ", string.Empty);
+            return c.Equals('\0');
         }
-    }
+    }    
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,17 +13,27 @@ namespace SimpleInterpreter.Core
         private readonly string _text;
         private int _pos;
         private Token _currentToken;
+        private char _currentChar;
 
         #region Constructor
+
         public Interpreter(string text)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ParseException();
+            }
+
             _text = text;
             _pos = 0;
             _currentToken = null;
+            _currentChar = _text[_pos];
         }
+
         #endregion
 
         #region Public
+
         public int Expression()
         {
             //set current token to the first token taken from the input
@@ -43,56 +54,53 @@ namespace SimpleInterpreter.Core
             switch (op)
             {
                 case TokenType.PLUS:
-                    return (int)left.Value + (int)right.Value;
+                    return (int) left.Value + (int) right.Value;
                 case TokenType.MINUS:
-                    return (int)left.Value - (int)right.Value;
+                    return (int) left.Value - (int) right.Value;
                 default:
-                    return (int)left.Value + (int)right.Value;
+                    return (int) left.Value + (int) right.Value;
             }
         }
+
         #endregion
 
         #region Private 
+
         /// <summary>
         /// Responsible for breaking a sentence apart into tokens. One token at a time.
         /// </summary>
         /// <returns><see cref="Token"/></returns>
         private Token GetNextToken()
         {
-            // return EOF if we're past the last token.
-            if (_pos > _text.Length - 1)
+            while (!_currentChar.IsNull())
             {
-                return new Token(TokenType.EOF, null);
-            }
-
-            var current = _text[_pos];
-
-            if (current == '+')
-            {
-                _pos++;
-                return new Token(TokenType.PLUS, current);
-            }
-
-            if (current == '-')
-            {
-                _pos++;
-                return new Token(TokenType.MINUS, current);
-            }
-
-            //scan from our current token to find the next non-integer token
-            var i = _pos + 1;            
-            for (var len = _text.Length; i < len; i++)
-            {
-                if (IsOpSymbol(_text[i]))
+                if (char.IsWhiteSpace(_currentChar))
                 {
-                    break;
+                    SkipWhitespace();
+                    continue;
                 }
+
+                if (char.IsDigit(_currentChar))
+                {
+                    return new Token(TokenType.INTEGER, GetNextInteger());
+                }
+
+                if (_currentChar == '+')
+                {
+                    Advance();
+                    return new Token(TokenType.PLUS, '+');
+                }
+
+                if (_currentChar == '-')
+                {
+                    Advance();
+                    return new Token(TokenType.MINUS, '-');
+                }
+
+                throw new ParseException();
             }
 
-            var diff = i - _pos;
-            var tokenText = _text.Substring(_pos, diff);
-            _pos += diff;
-            return new Token(TokenType.INTEGER, int.Parse(tokenText));
+            return new Token(TokenType.EOF, null);
         }
 
         private void Eat(TokenType type)
@@ -107,10 +115,40 @@ namespace SimpleInterpreter.Core
             }
         }
 
-        private static bool IsOpSymbol(char c)
+        private void Advance()
         {
-            return c == '+' || c == '-';
+            _pos++;
+
+            if (_pos > _text.Length - 1)
+            {
+                _currentChar = Constants.NullChar;
+            }
+            else
+            {
+                _currentChar = _text[_pos];
+            }
         }
+
+        private void SkipWhitespace()
+        {
+            while (!_currentChar.IsNull() && char.IsWhiteSpace(_currentChar))
+            {
+                Advance();
+            }
+        }
+
+        private int GetNextInteger()
+        {
+            var temp = "";
+            while (!_currentChar.IsNull() && char.IsDigit(_currentChar))
+            {
+                temp += _currentChar;
+                Advance();
+            }
+
+            return int.Parse(temp);
+        }
+
         #endregion
     }
 }
