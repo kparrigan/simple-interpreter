@@ -57,6 +57,10 @@ namespace SimpleInterpreter.Core
                     return (int) left.Value + (int) right.Value;
                 case TokenType.MINUS:
                     return (int) left.Value - (int) right.Value;
+                case TokenType.MULTIPLY:
+                    return (int)left.Value * (int)right.Value;
+                case TokenType.DIVIDE:
+                    return (int)left.Value / (int)right.Value;
                 default:
                     return (int) left.Value + (int) right.Value;
             }
@@ -95,6 +99,18 @@ namespace SimpleInterpreter.Core
                 {
                     Advance();
                     return new Token(TokenType.MINUS, '-');
+                }
+
+                if (_currentChar == 'x')
+                {
+                    Advance();
+                    return new Token(TokenType.MULTIPLY, 'x');
+                }
+
+                if (_currentChar == '/')
+                {
+                    Advance();
+                    return new Token(TokenType.DIVIDE, '/');
                 }
 
                 throw new ParseException();

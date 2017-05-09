@@ -12,7 +12,7 @@ namespace SimpleInterpreter.Test
     public class InterpreterTests
     {
         [TestMethod]
-        public void Can_Evaluate_Add_Expression()
+        public void Can_Evaluate_Addition_Expression()
         {
             const int expected = 8;
             var interpreter = new Interpreter("3+5");
@@ -21,14 +21,32 @@ namespace SimpleInterpreter.Test
         }
 
         [TestMethod]
-        public void Can_Evaluate_Subtract_Expression()
+        public void Can_Evaluate_Subtraction_Expression()
         {
             const int expected = 2;
             var interpreter = new Interpreter("7-5");
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
-        
+
+        [TestMethod]
+        public void Can_Evaluate_Multipication_Expression()
+        {
+            const int expected = 35;
+            var interpreter = new Interpreter("7x5");
+
+            Assert.AreEqual(expected, interpreter.Expression());
+        }
+
+        [TestMethod]
+        public void Can_Evaluate_Division_Expression()
+        {
+            const int expected = 2;
+            var interpreter = new Interpreter("4/2");
+
+            Assert.AreEqual(expected, interpreter.Expression());
+        }
+
         [TestMethod]
         public void Can_Handle_Multi_Digit_Tokens()
         {
@@ -37,6 +55,7 @@ namespace SimpleInterpreter.Test
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
+
 
         [TestMethod]
         [ExpectedException(typeof(ParseException))]

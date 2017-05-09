@@ -11,6 +11,8 @@ namespace SimpleInterpreter.Core
         INTEGER,
         PLUS,
         MINUS,
+        MULTIPLY,
+        DIVIDE,
         EOF
     }
 }
