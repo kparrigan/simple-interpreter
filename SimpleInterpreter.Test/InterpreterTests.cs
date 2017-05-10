@@ -30,7 +30,7 @@ namespace SimpleInterpreter.Test
         }
 
         [TestMethod]
-        public void Can_Evaluate_Multipication_Expression()
+        public void Can_Evaluate_Multiplication_Expression()
         {
             const int expected = 35;
             var interpreter = new Interpreter("7x5");
@@ -56,6 +56,14 @@ namespace SimpleInterpreter.Test
             Assert.AreEqual(expected, interpreter.Expression());
         }
 
+        [TestMethod]
+        public void Can_Handle_WhiteSpace()
+        {
+            const int expected = 15;
+            var interpreter = new Interpreter("12 + 3 ");
+
+            Assert.AreEqual(expected, interpreter.Expression());
+        }
 
         [TestMethod]
         [ExpectedException(typeof(ParseException))]
@@ -71,6 +79,15 @@ namespace SimpleInterpreter.Test
         {
             var interpreter = new Interpreter("");
             interpreter.Expression();
+        }
+
+        [TestMethod]
+        public void Can_Handle_Arbitrary_Length_Expression()
+        {
+            const int expected = 18;
+            var interpreter = new Interpreter("9 - 5 + 3 + 11");
+
+            Assert.AreEqual(expected, interpreter.Expression());
         }
     }
 }

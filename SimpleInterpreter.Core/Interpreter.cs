@@ -36,34 +36,36 @@ namespace SimpleInterpreter.Core
 
         public int Expression()
         {
-            //set current token to the first token taken from the input
+            var currentOp = TokenType.PLUS;
+            var value = 0;
+            var tokenCount = 1;
+
             _currentToken = GetNextToken();
 
-            //we expect the current token to be an integer
-            var left = _currentToken;
-            Eat(TokenType.INTEGER);
-
-            //middle token should be operation.
-            var op = _currentToken.Type;
-            Eat(_currentToken.Type);
-
-            //we expect the current token to be an integer
-            var right = _currentToken;
-            Eat(TokenType.INTEGER);
-
-            switch (op)
+            if (!int.TryParse(_currentToken.Value.ToString(), out value)) //balls
             {
-                case TokenType.PLUS:
-                    return (int) left.Value + (int) right.Value;
-                case TokenType.MINUS:
-                    return (int) left.Value - (int) right.Value;
-                case TokenType.MULTIPLY:
-                    return (int)left.Value * (int)right.Value;
-                case TokenType.DIVIDE:
-                    return (int)left.Value / (int)right.Value;
-                default:
-                    return (int) left.Value + (int) right.Value;
+                throw new ParseException();
             }
+
+            Eat(TokenType.INTEGER);
+
+            while (_currentToken.Type != TokenType.EOF)
+            {
+                tokenCount++;
+
+                if (tokenCount % 2 == 0)
+                {
+                    currentOp = _currentToken.Type;
+                    Eat(currentOp);
+                }
+                else
+                {
+                    value = ComputeValue(currentOp, (int)_currentToken.Value, value);
+                    Eat(TokenType.INTEGER);
+                }
+            }
+
+            return value;
         }
 
         #endregion
@@ -165,6 +167,23 @@ namespace SimpleInterpreter.Core
             return int.Parse(temp);
         }
 
+        /// <remarks>This is obviously wrong from an order of operations standpoint.</remarks>
+        private int ComputeValue(TokenType op, int tokenValue, int currentValue)
+        {
+            switch (op)
+            {
+                case TokenType.PLUS:
+                    return currentValue + tokenValue;
+                case TokenType.MINUS:
+                    return currentValue - tokenValue;
+                case TokenType.MULTIPLY:
+                    return currentValue * tokenValue;
+                case TokenType.DIVIDE:
+                    return currentValue / tokenValue;
+                default:
+                    return currentValue + tokenValue;
+            }
+        }
         #endregion
     }
 }
