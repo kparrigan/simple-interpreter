@@ -33,44 +33,58 @@ namespace SimpleInterpreter.Core
         #endregion
 
         #region Public
-
+        /// <summary>
+        /// Returns the results of interpreting the expression.
+        /// </summary>
+        /// <returns>int - value of expression</returns>
         public int Expression()
         {
-            var currentOp = TokenType.PLUS;
-            var value = 0;
-            var tokenCount = 1;
-
             _currentToken = GetNextToken();
+            var result = Term();
 
-            if (!int.TryParse(_currentToken.Value.ToString(), out value)) //balls
+            while (_currentToken.Type == TokenType.PLUS || _currentToken.Type == TokenType.MINUS ||
+                   _currentToken.Type == TokenType.MULTIPLY || _currentToken.Type == TokenType.DIVIDE)
             {
-                throw new ParseException();
+                var token = _currentToken;
+                switch (token.Type)
+                {
+                    case TokenType.PLUS:
+                        Eat(TokenType.PLUS);
+                        result += Term();
+                        break;
+                    case TokenType.MINUS:
+                        Eat(TokenType.MINUS);
+                        result -= Term();
+                        break;
+                    case TokenType.MULTIPLY:
+                        Eat(TokenType.MULTIPLY);
+                        result *= Term();
+                        break;
+                    case TokenType.DIVIDE:
+                        Eat(TokenType.DIVIDE);
+                        result /= Term();
+                        break;
+                    default:
+                        throw new ParseException();
+                }
             }
 
-            Eat(TokenType.INTEGER);
-
-            while (_currentToken.Type != TokenType.EOF)
-            {
-                tokenCount++;
-
-                if (tokenCount % 2 == 0)
-                {
-                    currentOp = _currentToken.Type;
-                    Eat(currentOp);
-                }
-                else
-                {
-                    value = ComputeValue(currentOp, (int)_currentToken.Value, value);
-                    Eat(TokenType.INTEGER);
-                }
-            }
-
-            return value;
+            return result;
         }
 
         #endregion
 
         #region Private 
+        /// <summary>
+        /// Returns the value of the current term and eats the current integer token.
+        /// </summary>
+        /// <returns></returns>
+        private int Term()
+        {
+            var token = _currentToken;
+            Eat(TokenType.INTEGER);
+            return (int)token.Value;
+        }
 
         /// <summary>
         /// Responsible for breaking a sentence apart into tokens. One token at a time.
