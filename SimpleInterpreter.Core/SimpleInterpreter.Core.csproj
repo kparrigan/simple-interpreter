@@ -43,7 +43,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interpreter.cs" />
-    <Compile Include="ParseException.cs" />
+    <Compile Include="Lexer.cs" />
+    <Compile Include="InterpretationException.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="TokenType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,7 +15,8 @@ namespace SimpleInterpreter.Test
         public void Can_Evaluate_Addition_Expression()
         {
             const int expected = 8;
-            var interpreter = new Interpreter("3+5");
+            var lexer = new Lexer("3+5");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
@@ -24,7 +25,8 @@ namespace SimpleInterpreter.Test
         public void Can_Evaluate_Subtraction_Expression()
         {
             const int expected = 2;
-            var interpreter = new Interpreter("7-5");
+            var lexer = new Lexer("7-5");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
@@ -33,7 +35,8 @@ namespace SimpleInterpreter.Test
         public void Can_Evaluate_Multiplication_Expression()
         {
             const int expected = 35;
-            var interpreter = new Interpreter("7x5");
+            var lexer = new Lexer("7*5");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
@@ -42,7 +45,8 @@ namespace SimpleInterpreter.Test
         public void Can_Evaluate_Division_Expression()
         {
             const int expected = 2;
-            var interpreter = new Interpreter("4/2");
+            var lexer = new Lexer("4/2");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
@@ -51,7 +55,8 @@ namespace SimpleInterpreter.Test
         public void Can_Handle_Multi_Digit_Tokens()
         {
             const int expected = 15;
-            var interpreter = new Interpreter("12+3");
+            var lexer = new Lexer("12+3");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
@@ -60,34 +65,41 @@ namespace SimpleInterpreter.Test
         public void Can_Handle_WhiteSpace()
         {
             const int expected = 15;
-            var interpreter = new Interpreter("12 + 3 ");
+            var lexer = new Lexer("12 + 3 ");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ParseException))]
+        [ExpectedException(typeof(InterpretationException))]
         public void Can_Handle_Invalid_Expression()
         {
-            var interpreter = new Interpreter("+12 3");
-            interpreter.Expression();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ParseException))]
-        public void Can_Handle_Empty_Expression()
-        {
-            var interpreter = new Interpreter("");
+            var lexer = new Lexer("+12 3");
+            var interpreter = new Interpreter(lexer);
             interpreter.Expression();
         }
 
         [TestMethod]
         public void Can_Handle_Arbitrary_Length_Expression()
         {
-            const int expected = 18;
-            var interpreter = new Interpreter("9 - 5 + 3 + 11");
+            var expected = 18;
+            var lexer = new Lexer("9 - 5 + 3 + 11");
+            var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
+
+            expected = 21; //should be 17, but the interpreter doesn't currently handle order of operations.
+            lexer = new Lexer("14 + 2 * 3 - 6 / 2");
+            interpreter = new Interpreter(lexer);
+            Assert.AreEqual(expected, interpreter.Expression());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Can_Handle_Null_Lexer()
+        {
+            var interpreter = new Interpreter(null);
         }
     }
 }

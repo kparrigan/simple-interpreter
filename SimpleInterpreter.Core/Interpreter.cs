@@ -10,37 +10,36 @@ namespace SimpleInterpreter.Core
 {
     public class Interpreter
     {
-        private readonly string _text;
-        private int _pos;
+        private readonly Lexer _lexer;
         private Token _currentToken;
-        private char _currentChar;
 
         #region Constructor
-
-        public Interpreter(string text)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Interpreter"/> class.
+        /// </summary>
+        /// <param name="lexer">Performs lexical analysis.</param>
+        /// <exception cref="ArgumentException">Thrown if lexer is null.</exception>
+        public Interpreter(Lexer lexer)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                throw new ParseException();
-            }
-
-            _text = text;
-            _pos = 0;
-            _currentToken = null;
-            _currentChar = _text[_pos];
+            _lexer = lexer ?? throw new ArgumentNullException(nameof(lexer));
+            _currentToken = _lexer.GetNextToken();
         }
 
         #endregion
 
         #region Public
         /// <summary>
-        /// Returns the results of interpreting the expression.
+        /// Parses/interprets an arithmetic expression.
         /// </summary>
-        /// <returns>int - value of expression</returns>
+        /// <returns>int - results of expression</returns>
+        /// <remarks>
+        /// expr       : factor ((ADD | SUB | MUL | DIV) factor)*
+        /// factor     : INTEGER
+        /// </remarks>
+        /// <exception cref="InterpretationException">Thrown on errors during interpretation.</exception>
         public int Expression()
         {
-            _currentToken = GetNextToken();
-            var result = Term();
+            var result = Factor();
 
             while (_currentToken.Type == TokenType.PLUS || _currentToken.Type == TokenType.MINUS ||
                    _currentToken.Type == TokenType.MULTIPLY || _currentToken.Type == TokenType.DIVIDE)
@@ -50,22 +49,23 @@ namespace SimpleInterpreter.Core
                 {
                     case TokenType.PLUS:
                         Eat(TokenType.PLUS);
-                        result += Term();
+                        result += Factor();
                         break;
                     case TokenType.MINUS:
                         Eat(TokenType.MINUS);
-                        result -= Term();
+                        result -= Factor();
                         break;
                     case TokenType.MULTIPLY:
                         Eat(TokenType.MULTIPLY);
-                        result *= Term();
+                        result *= Factor();
                         break;
                     case TokenType.DIVIDE:
                         Eat(TokenType.DIVIDE);
-                        result /= Term();
+                        result /= Factor();
                         break;
                     default:
-                        throw new ParseException();
+                        Error();
+                        break;
                 }
             }
 
@@ -75,11 +75,17 @@ namespace SimpleInterpreter.Core
         #endregion
 
         #region Private 
+        private void Error()
+        {
+            throw new InterpretationException("Invalid syntax");
+        }
+
         /// <summary>
-        /// Returns the value of the current term and eats the current integer token.
+        /// Returns the value of the current integer token.
         /// </summary>
-        /// <returns></returns>
-        private int Term()
+        /// <returns>Integer value of current token.</returns>
+        /// <remarks>factor : INTEGER</remarks>
+        private int Factor()
         {
             var token = _currentToken;
             Eat(TokenType.INTEGER);
@@ -87,98 +93,20 @@ namespace SimpleInterpreter.Core
         }
 
         /// <summary>
-        /// Responsible for breaking a sentence apart into tokens. One token at a time.
+        /// Compare the current token type with the supplied token type. If they match, 'eat' the current token and 
+        /// assign the next token to the current token. Otherwise, raise exception.
         /// </summary>
-        /// <returns><see cref="Token"/></returns>
-        private Token GetNextToken()
-        {
-            while (!_currentChar.IsNull())
-            {
-                if (char.IsWhiteSpace(_currentChar))
-                {
-                    SkipWhitespace();
-                    continue;
-                }
-
-                if (char.IsDigit(_currentChar))
-                {
-                    return new Token(TokenType.INTEGER, GetNextInteger());
-                }
-
-                if (_currentChar == '+')
-                {
-                    Advance();
-                    return new Token(TokenType.PLUS, '+');
-                }
-
-                if (_currentChar == '-')
-                {
-                    Advance();
-                    return new Token(TokenType.MINUS, '-');
-                }
-
-                if (_currentChar == 'x')
-                {
-                    Advance();
-                    return new Token(TokenType.MULTIPLY, 'x');
-                }
-
-                if (_currentChar == '/')
-                {
-                    Advance();
-                    return new Token(TokenType.DIVIDE, '/');
-                }
-
-                throw new ParseException();
-            }
-
-            return new Token(TokenType.EOF, null);
-        }
-
+        /// <param name="type">Expected type of current token.</param>
         private void Eat(TokenType type)
         {
             if (_currentToken.Type == type)
             {
-                _currentToken = GetNextToken();
+                _currentToken = _lexer.GetNextToken();
             }
             else
             {
-                throw new ParseException();
+                Error();
             }
-        }
-
-        private void Advance()
-        {
-            _pos++;
-
-            if (_pos > _text.Length - 1)
-            {
-                _currentChar = Constants.NullChar;
-            }
-            else
-            {
-                _currentChar = _text[_pos];
-            }
-        }
-
-        private void SkipWhitespace()
-        {
-            while (!_currentChar.IsNull() && char.IsWhiteSpace(_currentChar))
-            {
-                Advance();
-            }
-        }
-
-        private int GetNextInteger()
-        {
-            var temp = "";
-            while (!_currentChar.IsNull() && char.IsDigit(_currentChar))
-            {
-                temp += _currentChar;
-                Advance();
-            }
-
-            return int.Parse(temp);
         }
         #endregion
     }
