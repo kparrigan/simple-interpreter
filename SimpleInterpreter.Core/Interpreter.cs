@@ -180,24 +180,6 @@ namespace SimpleInterpreter.Core
 
             return int.Parse(temp);
         }
-
-        /// <remarks>This is obviously wrong from an order of operations standpoint.</remarks>
-        private int ComputeValue(TokenType op, int tokenValue, int currentValue)
-        {
-            switch (op)
-            {
-                case TokenType.PLUS:
-                    return currentValue + tokenValue;
-                case TokenType.MINUS:
-                    return currentValue - tokenValue;
-                case TokenType.MULTIPLY:
-                    return currentValue * tokenValue;
-                case TokenType.DIVIDE:
-                    return currentValue / tokenValue;
-                default:
-                    return currentValue + tokenValue;
-            }
-        }
         #endregion
     }
 }
