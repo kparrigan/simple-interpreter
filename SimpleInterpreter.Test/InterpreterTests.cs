@@ -83,15 +83,19 @@ namespace SimpleInterpreter.Test
         [TestMethod]
         public void Can_Handle_Arbitrary_Length_Expression()
         {
-            var expected = 18;
+            const int expected = 18;
             var lexer = new Lexer("9 - 5 + 3 + 11");
             var interpreter = new Interpreter(lexer);
 
             Assert.AreEqual(expected, interpreter.Expression());
+        }
 
-            expected = 21; //should be 17, but the interpreter doesn't currently handle order of operations.
-            lexer = new Lexer("14 + 2 * 3 - 6 / 2");
-            interpreter = new Interpreter(lexer);
+        [TestMethod]
+        public void Can_Evaluate_Operator_Precendence()
+        {
+            const int expected = 17;
+            var lexer = new Lexer("14 + 2 * 3 - 6 / 2");
+            var interpreter = new Interpreter(lexer);
             Assert.AreEqual(expected, interpreter.Expression());
         }
 

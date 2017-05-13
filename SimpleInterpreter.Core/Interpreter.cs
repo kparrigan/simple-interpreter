@@ -33,35 +33,27 @@ namespace SimpleInterpreter.Core
         /// </summary>
         /// <returns>int - results of expression</returns>
         /// <remarks>
-        /// expr       : factor ((ADD | SUB | MUL | DIV) factor)*
-        /// factor     : INTEGER
+        ///     expr   : term((PLUS | MINUS) term)*
+        ///     term   : factor((MUL | DIV) factor)*
+        ///     factor : INTEGER
         /// </remarks>
         /// <exception cref="InterpretationException">Thrown on errors during interpretation.</exception>
         public int Expression()
         {
-            var result = Factor();
+            var result = Term();
 
-            while (_currentToken.Type == TokenType.PLUS || _currentToken.Type == TokenType.MINUS ||
-                   _currentToken.Type == TokenType.MULTIPLY || _currentToken.Type == TokenType.DIVIDE)
+            while (_currentToken.Type == TokenType.PLUS || _currentToken.Type == TokenType.MINUS)
             {
                 var token = _currentToken;
                 switch (token.Type)
                 {
                     case TokenType.PLUS:
                         Eat(TokenType.PLUS);
-                        result += Factor();
+                        result += Term();
                         break;
                     case TokenType.MINUS:
                         Eat(TokenType.MINUS);
-                        result -= Factor();
-                        break;
-                    case TokenType.MULTIPLY:
-                        Eat(TokenType.MULTIPLY);
-                        result *= Factor();
-                        break;
-                    case TokenType.DIVIDE:
-                        Eat(TokenType.DIVIDE);
-                        result /= Factor();
+                        result -= Term();
                         break;
                     default:
                         Error();
@@ -90,6 +82,38 @@ namespace SimpleInterpreter.Core
             var token = _currentToken;
             Eat(TokenType.INTEGER);
             return (int)token.Value;
+        }
+
+        /// <summary>
+        /// Performs computation for multiply/divide operator production rule.
+        /// </summary>
+        /// <returns>Integer value of operation.</returns>
+        /// <remarks>term : factor ((MUL | DIV) factor)</remarks>
+        private int Term()
+        {
+            var result = Factor();
+
+            while (_currentToken.Type == TokenType.MULTIPLY || _currentToken.Type == TokenType.DIVIDE)
+            {
+                var token = _currentToken;
+                switch(token.Type)
+                {
+                    case TokenType.MULTIPLY:
+                        Eat(TokenType.MULTIPLY);
+                        result *= Factor();
+                        break;
+                    case TokenType.DIVIDE:
+                        Eat(TokenType.DIVIDE);
+                        result /= Factor();
+                        break;
+                    default:
+                        Error();
+                        break;
+                }
+
+            }
+
+            return result;
         }
 
         /// <summary>
