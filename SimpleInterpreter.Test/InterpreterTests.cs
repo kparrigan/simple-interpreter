@@ -78,6 +78,14 @@ namespace SimpleInterpreter.Test
             var lexer = new Lexer("+12 3");
             var interpreter = new Interpreter(lexer);
             interpreter.Expression();
+
+            lexer = new Lexer("1 + ( 2 * 2");
+            interpreter = new Interpreter(lexer);
+            interpreter.Expression();
+
+            lexer = new Lexer("1 + 2 * 2)");
+            interpreter = new Interpreter(lexer);
+            interpreter.Expression();
         }
 
         [TestMethod]
@@ -96,6 +104,24 @@ namespace SimpleInterpreter.Test
             const int expected = 17;
             var lexer = new Lexer("14 + 2 * 3 - 6 / 2");
             var interpreter = new Interpreter(lexer);
+            Assert.AreEqual(expected, interpreter.Expression());
+        }
+
+        [TestMethod]
+        public void Can_Evaluate_Parens()
+        {
+            var expected = 5;
+            var lexer = new Lexer("(2 * 2) + 1");
+            var interpreter = new Interpreter(lexer);
+            Assert.AreEqual(expected, interpreter.Expression());
+
+            lexer = new Lexer("1 + (2 * 2)");
+            interpreter = new Interpreter(lexer);
+            Assert.AreEqual(expected, interpreter.Expression());
+
+            expected = 22;
+            lexer = new Lexer("7 + 3 * (10 / (12 / (3 + 1) - 1))");
+            interpreter = new Interpreter(lexer);
             Assert.AreEqual(expected, interpreter.Expression());
         }
 

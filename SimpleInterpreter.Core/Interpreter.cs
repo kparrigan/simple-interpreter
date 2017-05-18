@@ -35,7 +35,7 @@ namespace SimpleInterpreter.Core
         /// <remarks>
         ///     expr   : term((PLUS | MINUS) term)*
         ///     term   : factor((MUL | DIV) factor)*
-        ///     factor : INTEGER
+        ///     factor : INTEGER | LPAREN expr RPAREN
         /// </remarks>
         /// <exception cref="InterpretationException">Thrown on errors during interpretation.</exception>
         public int Expression()
@@ -76,12 +76,25 @@ namespace SimpleInterpreter.Core
         /// Returns the value of the current integer token.
         /// </summary>
         /// <returns>Integer value of current token.</returns>
-        /// <remarks>factor : INTEGER</remarks>
+        /// <remarks>factor : INTEGER | LPAREN expr RPAREN</remarks>
         private int Factor()
         {
+            int result;
             var token = _currentToken;
-            Eat(TokenType.INTEGER);
-            return (int)token.Value;
+
+            if (token.Type == TokenType.INTEGER)
+            {
+                Eat(TokenType.INTEGER);
+                result = (int)token.Value;
+            }
+            else
+            {
+                Eat(TokenType.LEFT_PAREN);
+                result = Expression();
+                Eat(TokenType.RIGHT_PAREN);
+            }
+
+            return result;
         }
 
         /// <summary>

@@ -77,6 +77,18 @@ namespace SimpleInterpreter.Core
                     return new Token(TokenType.DIVIDE, '/');
                 }
 
+                if (_currentChar == '(')
+                {
+                    Advance();
+                    return new Token(TokenType.LEFT_PAREN, '(');
+                }
+
+                if (_currentChar == ')')
+                {
+                    Advance();
+                    return new Token(TokenType.RIGHT_PAREN, ')');
+                }
+
                 Error();
             }
 

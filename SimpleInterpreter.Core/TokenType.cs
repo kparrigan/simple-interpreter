@@ -13,6 +13,8 @@ namespace SimpleInterpreter.Core
         MINUS,
         MULTIPLY,
         DIVIDE,
+        LEFT_PAREN,
+        RIGHT_PAREN,
         EOF
     }
 }
