@@ -32,7 +32,7 @@ namespace SimpleInterpreter.Core
 
         #region Private
 
-        private object VisitBinaryOperatorNode(BinaryOperatorNode node)
+        private int VisitBinaryOperatorNode(BinaryOperatorNode node)
         {
             switch (node.Op.Type)
             {

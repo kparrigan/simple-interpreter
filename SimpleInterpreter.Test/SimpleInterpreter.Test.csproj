@@ -51,11 +51,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="InterpreterTests.cs" />
+    <Compile Include="TestHelpers\BarNode.cs" />
+    <Compile Include="TestHelpers\FooNode.cs" />
+    <Compile Include="TestHelpers\TestingVisitor.cs" />
     <Compile Include="TokenTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CharExtensionTests.cs" />
     <Compile Include="LexerTests.cs" />
     <Compile Include="ParserTests.cs" />
+    <Compile Include="NodeVisitorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleInterpreter.Core\SimpleInterpreter.Core.csproj">

@@ -20,7 +20,7 @@ namespace SimpleInterpreter.Core
 
             if (method == null)
             {
-                throw new InterpretationException($"Method {methodName} not found." );
+                throw new InvalidNodeTypeException($"Method {methodName} not found." );
             }
 
             return method.Invoke(this, new object [] {node});

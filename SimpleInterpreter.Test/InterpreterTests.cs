@@ -121,6 +121,13 @@ namespace SimpleInterpreter.Test
             interpreter = new Interpreter(parser);
 
             Assert.AreEqual(expected, interpreter.Interpret());
+
+            expected = 12;
+            lexer = new Lexer("7 + (((3 + 2)))");
+            parser = new Parser(lexer);
+            interpreter = new Interpreter(parser);
+
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
     }
 }
