@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SimpleInterpreter.Core.Exceptions;
 
 namespace SimpleInterpreter.Core
 {
@@ -37,7 +38,7 @@ namespace SimpleInterpreter.Core
         /// Responsible for breaking a sentence apart into tokens. One token at a time.
         /// </summary>
         /// <returns><see cref="Token"/>Next token from stream.</returns>
-        /// <exception cref="InterpretationException">Thrown on errors encountered during lexing.</exception>
+        /// <exception cref="LexingException">Thrown on errors encountered during lexing.</exception>
         public Token GetNextToken()
         {
             while (!_currentChar.IsNull())
@@ -100,7 +101,7 @@ namespace SimpleInterpreter.Core
 
         private void Error()
         {
-            throw new InterpretationException("Invalid character");
+            throw new LexingException("Invalid character");
         }
 
         private void Advance()

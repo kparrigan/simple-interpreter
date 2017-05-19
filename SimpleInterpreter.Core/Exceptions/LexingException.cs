@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleInterpreter.Core
+namespace SimpleInterpreter.Core.Exceptions
 {
-    public class InterpretationException : Exception
+    public sealed class LexingException : ApplicationException
     {
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="InterpretationException"/> class.
+        /// Initializes a new instance of the <see cref="LexingException"/> class.
         /// </summary>
         /// <param name="message">Message of exception.</param>
-        public InterpretationException(string message)
-           : base (message) 
+        public LexingException(string message)
+            : base (message) 
         {
         }
         #endregion

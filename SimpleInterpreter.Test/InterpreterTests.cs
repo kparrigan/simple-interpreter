@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleInterpreter.Core;
+using SimpleInterpreter.Core.Exceptions;
 
 namespace SimpleInterpreter.Test
 {
@@ -16,9 +17,10 @@ namespace SimpleInterpreter.Test
         {
             const int expected = 8;
             var lexer = new Lexer("3+5");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
@@ -26,9 +28,10 @@ namespace SimpleInterpreter.Test
         {
             const int expected = 2;
             var lexer = new Lexer("7-5");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
@@ -36,9 +39,10 @@ namespace SimpleInterpreter.Test
         {
             const int expected = 35;
             var lexer = new Lexer("7*5");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
@@ -46,56 +50,43 @@ namespace SimpleInterpreter.Test
         {
             const int expected = 2;
             var lexer = new Lexer("4/2");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
-        public void Can_Handle_Multi_Digit_Tokens()
+        public void Can_Evaluate_Multi_Digit_Tokens()
         {
             const int expected = 15;
             var lexer = new Lexer("12+3");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
-        public void Can_Handle_WhiteSpace()
+        public void Can_Evaluate_WhiteSpace()
         {
             const int expected = 15;
             var lexer = new Lexer("12 + 3 ");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InterpretationException))]
-        public void Can_Handle_Invalid_Expression()
-        {
-            var lexer = new Lexer("+12 3");
-            var interpreter = new Interpreter(lexer);
-            interpreter.Expression();
-
-            lexer = new Lexer("1 + ( 2 * 2");
-            interpreter = new Interpreter(lexer);
-            interpreter.Expression();
-
-            lexer = new Lexer("1 + 2 * 2)");
-            interpreter = new Interpreter(lexer);
-            interpreter.Expression();
-        }
-
-        [TestMethod]
-        public void Can_Handle_Arbitrary_Length_Expression()
+        public void Can_Evaluate_Arbitrary_Length_Expression()
         {
             const int expected = 18;
             var lexer = new Lexer("9 - 5 + 3 + 11");
-            var interpreter = new Interpreter(lexer);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
 
-            Assert.AreEqual(expected, interpreter.Expression());
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
@@ -103,8 +94,10 @@ namespace SimpleInterpreter.Test
         {
             const int expected = 17;
             var lexer = new Lexer("14 + 2 * 3 - 6 / 2");
-            var interpreter = new Interpreter(lexer);
-            Assert.AreEqual(expected, interpreter.Expression());
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
+
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
 
         [TestMethod]
@@ -112,24 +105,22 @@ namespace SimpleInterpreter.Test
         {
             var expected = 5;
             var lexer = new Lexer("(2 * 2) + 1");
-            var interpreter = new Interpreter(lexer);
-            Assert.AreEqual(expected, interpreter.Expression());
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
+
+            Assert.AreEqual(expected, interpreter.Interpret());
 
             lexer = new Lexer("1 + (2 * 2)");
-            interpreter = new Interpreter(lexer);
-            Assert.AreEqual(expected, interpreter.Expression());
+            parser = new Parser(lexer);
+            interpreter = new Interpreter(parser);
+            Assert.AreEqual(expected, interpreter.Interpret());
 
             expected = 22;
             lexer = new Lexer("7 + 3 * (10 / (12 / (3 + 1) - 1))");
-            interpreter = new Interpreter(lexer);
-            Assert.AreEqual(expected, interpreter.Expression());
-        }
+            parser = new Parser(lexer);
+            interpreter = new Interpreter(parser);
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Can_Handle_Null_Lexer()
-        {
-            var interpreter = new Interpreter(null);
+            Assert.AreEqual(expected, interpreter.Interpret());
         }
     }
 }

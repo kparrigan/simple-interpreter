@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1244E01F-22FA-4996-9C2D-0414DF0E517B}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInterpreter.Test", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInterpreter.Core", "SimpleInterpreter.Core\SimpleInterpreter.Core.csproj", "{B1024226-E6C1-49DC-9D29-DDD68DD65869}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calc1", "Calc1\Calc1.csproj", "{15816692-C713-48D5-B4D4-E7968423F7C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleInterpreter.Console", "SimpleInterpreter.Console\SimpleInterpreter.Console.csproj", "{15816692-C713-48D5-B4D4-E7968423F7C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,8 +7,8 @@
     <ProjectGuid>{15816692-C713-48D5-B4D4-E7968423F7C8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Calc1</RootNamespace>
-    <AssemblyName>Calc1</AssemblyName>
+    <RootNamespace>SimpleInterpreter.Console</RootNamespace>
+    <AssemblyName>SimpleInterpreter.Console</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
