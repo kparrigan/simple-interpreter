@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SimpleInterpreter.Core.Exceptions;
 using SimpleInterpreter.Core.Nodes;
 
-namespace SimpleInterpreter.Core
+namespace SimpleInterpreter.Core.Visitors
 {
     public abstract class NodeVisitor
     {

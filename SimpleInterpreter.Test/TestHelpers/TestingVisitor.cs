@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SimpleInterpreter.Core;
 using SimpleInterpreter.Core.Nodes;
+using SimpleInterpreter.Core.Visitors;
 
 namespace SimpleInterpreter.Test.TestHelpers
 {

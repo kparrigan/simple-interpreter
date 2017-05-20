@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SimpleInterpreter.Core.Exceptions;
 using SimpleInterpreter.Core.Nodes;
+using SimpleInterpreter.Core.Visitors;
 
 namespace SimpleInterpreter.Core
 {
