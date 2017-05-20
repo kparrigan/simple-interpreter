@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SimpleInterpreter.Core.Exceptions;
 using SimpleInterpreter.Core.Nodes;
 
 namespace SimpleInterpreter.Core.Visitors
 {
-    public sealed class ReversePolishNotationTranslator : NodeVisitor
+    public sealed class LISPNotationTranslator : NodeVisitor
     {
         private readonly Parser _parser;
 
         #region Constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReversePolishNotationTranslator"/> class.
+        /// Initializes a new instance of the <see cref="LISPNotationTranslator"/> class.
         /// </summary>
         /// <param name="parser">Expression parser.</param>
-        public ReversePolishNotationTranslator(Parser parser)
+        public LISPNotationTranslator(Parser parser)
         {
             _parser = parser;
         }
@@ -28,7 +27,7 @@ namespace SimpleInterpreter.Core.Visitors
         /// Interprets the expression.
         /// </summary>
         /// <returns>
-        /// String - Reverse Polign Notation version of the expression.
+        /// String - LISP-style parenthesized prefix notation version of the expression.
         /// </returns>
         public string Interpret()
         {
@@ -41,7 +40,7 @@ namespace SimpleInterpreter.Core.Visitors
 
         private string VisitBinaryOperatorNode(BinaryOperatorNode node)
         {
-            return Visit(node.Left) + " " + Visit(node.Right) + " " + node.Op.Value;
+            return "(" + node.Op.Value + " " + Visit(node.Left) + " " + Visit(node.Right) + ")";
         }
 
         private string VisitNumberNode(NumberNode node)

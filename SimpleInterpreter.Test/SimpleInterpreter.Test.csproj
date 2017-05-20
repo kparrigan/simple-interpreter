@@ -61,6 +61,7 @@
     <Compile Include="ParserTests.cs" />
     <Compile Include="NodeVisitorTests.cs" />
     <Compile Include="RPNTranslatorTests.cs" />
+    <Compile Include="LISPTranslatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleInterpreter.Core\SimpleInterpreter.Core.csproj">
