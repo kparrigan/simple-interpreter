@@ -56,24 +56,24 @@ namespace SimpleInterpreter.Core
                 }
 
 
-                if (_currentChar == ':' && Peek() == '=')
+                if (_currentChar == Constants.Colon && Peek() == Constants.Equal)
                 {
                     Advance();
                     Advance();
-                    return new Token(TokenType.ASSIGN, ":=");
+                    return new Token(TokenType.ASSIGN, Constants.Assignment);
                 }
 
 
-                if (_currentChar == ';')
+                if (_currentChar == Constants.SemiColon)
                 {
                     Advance();
-                    return new Token(TokenType.SEMI, ';');
+                    return new Token(TokenType.SEMI, Constants.SemiColon);
                 }
 
-                if (_currentChar == '.')
+                if (_currentChar == Constants.Dot)
                 {
                     Advance();
-                    return new Token(TokenType.DOT, '.');
+                    return new Token(TokenType.DOT, Constants.Dot);
                 }
 
                 if (char.IsWhiteSpace(_currentChar))
@@ -87,40 +87,40 @@ namespace SimpleInterpreter.Core
                     return new Token(TokenType.INTEGER, GetNextInteger());
                 }
 
-                if (_currentChar == '+')
+                if (_currentChar == Constants.Plus)
                 {
                     Advance();
-                    return new Token(TokenType.PLUS, '+');
+                    return new Token(TokenType.PLUS, Constants.Plus);
                 }
 
-                if (_currentChar == '-')
+                if (_currentChar == Constants.Minus)
                 {
                     Advance();
-                    return new Token(TokenType.MINUS, '-');
+                    return new Token(TokenType.MINUS, Constants.Minus);
                 }
 
-                if (_currentChar == '*')
+                if (_currentChar == Constants.Multiply)
                 {
                     Advance();
-                    return new Token(TokenType.MULTIPLY, '*');
+                    return new Token(TokenType.MULTIPLY, Constants.Multiply);
                 }
 
-                if (_currentChar == '/')
+                if (_currentChar == Constants.Divide)
                 {
                     Advance();
-                    return new Token(TokenType.DIVIDE, '/');
+                    return new Token(TokenType.DIVIDE, Constants.Divide);
                 }
 
-                if (_currentChar == '(')
+                if (_currentChar == Constants.LeftParen)
                 {
                     Advance();
-                    return new Token(TokenType.LEFT_PAREN, '(');
+                    return new Token(TokenType.LEFT_PAREN, Constants.LeftParen);
                 }
 
-                if (_currentChar == ')')
+                if (_currentChar == Constants.RightParen)
                 {
                     Advance();
-                    return new Token(TokenType.RIGHT_PAREN, ')');
+                    return new Token(TokenType.RIGHT_PAREN, Constants.RightParen);
                 }
 
                 Error();
