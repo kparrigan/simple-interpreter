@@ -15,6 +15,12 @@ namespace SimpleInterpreter.Core
         DIVIDE,
         LEFT_PAREN,
         RIGHT_PAREN,
-        EOF
+        EOF,
+        BEGIN,
+        END,
+        DOT,
+        ID,
+        ASSIGN,
+        SEMI
     }
 }

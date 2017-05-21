@@ -13,6 +13,7 @@ namespace SimpleInterpreter.Core
         private readonly string _text;
         private char _currentChar;
         private int _pos;
+        private readonly Dictionary<string, Token> _reservedKeywords;
 
         #region Constructor
         /// <summary>
@@ -30,6 +31,12 @@ namespace SimpleInterpreter.Core
             _text = text;
             _pos = 0;
             _currentChar = _text[_pos];
+
+            _reservedKeywords = new Dictionary<string, Token>()
+            {
+                {"BEGIN", new Token(TokenType.BEGIN, "BEGIN")},
+                {"END", new Token(TokenType.END, "END")}
+            };
         }
         #endregion
 
@@ -43,6 +50,32 @@ namespace SimpleInterpreter.Core
         {
             while (!_currentChar.IsNull())
             {
+                if (char.IsLetter(_currentChar))
+                {
+                    return Id();
+                }
+
+
+                if (_currentChar == ':' && Peek() == '=')
+                {
+                    Advance();
+                    Advance();
+                    return new Token(TokenType.ASSIGN, ":=");
+                }
+
+
+                if (_currentChar == ';')
+                {
+                    Advance();
+                    return new Token(TokenType.SEMI, ';');
+                }
+
+                if (_currentChar == '.')
+                {
+                    Advance();
+                    return new Token(TokenType.DOT, '.');
+                }
+
                 if (char.IsWhiteSpace(_currentChar))
                 {
                     SkipWhitespace();
@@ -136,6 +169,40 @@ namespace SimpleInterpreter.Core
             }
 
             return int.Parse(temp);
+        }
+
+        private char Peek()
+        {
+            var peekPos = _pos + 1;
+
+            if (peekPos > _text.Length - 1)
+            {
+                return Constants.NullChar;
+            }
+
+            return _text[peekPos];           
+        }
+
+        /// <summary>
+        /// Handles identifiers and reserved keywords
+        /// </summary>
+        /// <returns>Token for identifier or reserved keyword.</returns>
+        private Token Id()
+        {
+            var resultBuilder = new StringBuilder();
+
+            while (!_currentChar.IsNull() && char.IsLetterOrDigit(_currentChar))
+            {
+                resultBuilder.Append(_currentChar);
+                Advance();
+            }
+
+            var result = resultBuilder.ToString();
+            var defaultToken = new Token(TokenType.ID, result);
+
+            return _reservedKeywords.ContainsKey(result) 
+                ? _reservedKeywords[result]
+                : defaultToken;
         }
         #endregion
     }
