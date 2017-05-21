@@ -47,6 +47,7 @@
     <Compile Include="Nodes\BinaryOperatorNode.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Nodes\UnaryOperatorNode.cs" />
     <Compile Include="Visitors\Interpreter.cs" />
     <Compile Include="Visitors\LISPNotationTranslator.cs" />
     <Compile Include="Visitors\NodeVisitor.cs" />

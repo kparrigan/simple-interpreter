@@ -62,6 +62,7 @@
     <Compile Include="NodeVisitorTests.cs" />
     <Compile Include="RPNTranslatorTests.cs" />
     <Compile Include="LISPTranslatorTests.cs" />
+    <Compile Include="UnaryOperatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleInterpreter.Core\SimpleInterpreter.Core.csproj">

@@ -55,6 +55,21 @@ namespace SimpleInterpreter.Core
         {
             return node.Value;
         }
+
+        private int VisitUnaryOperatorNode(UnaryOperatorNode node)
+        {
+            var opType = node.Op.Type;
+
+            switch (opType)
+            {
+                case TokenType.PLUS:
+                    return +(int)Visit(node.Expression);
+                case TokenType.MINUS:
+                    return -(int)Visit(node.Expression);
+                default:
+                    throw new InterpretationException($"Invalid node token type: {node.Op.Type}");
+            }
+        }
         #endregion
     }
 }

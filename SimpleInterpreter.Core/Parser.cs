@@ -82,25 +82,28 @@ namespace SimpleInterpreter.Core
         /// Returns the Node of the current factor.
         /// </summary>
         /// <returns><see cref="ASTNode"/>Current node for AST.</returns>
-        /// <remarks>factor : INTEGER | LPAREN expr RPAREN</remarks>
+        /// <remarks>factor : (PLUS | MINUS) factor | INTEGER | LPAREN expr RPAREN</remarks>
         private ASTNode Factor()
         {
             var token = _currentToken;
-            ASTNode node;
 
-            if (token.Type == TokenType.INTEGER)
+            switch (token.Type)
             {
-                Eat(TokenType.INTEGER);
-                node = new NumberNode(token);
+                case TokenType.PLUS:
+                    Eat(TokenType.PLUS);
+                    return new UnaryOperatorNode(token, Factor());
+                case TokenType.MINUS:
+                    Eat(TokenType.MINUS);
+                    return new UnaryOperatorNode(token, Factor());
+                case TokenType.INTEGER:
+                    Eat(TokenType.INTEGER);
+                    return new NumberNode(token);
+                default:
+                    Eat(TokenType.LEFT_PAREN);
+                    var node = Expression();
+                    Eat(TokenType.RIGHT_PAREN);
+                    return node;
             }
-            else
-            {
-                Eat(TokenType.LEFT_PAREN);
-                node = Expression();
-                Eat(TokenType.RIGHT_PAREN);
-            }
-
-            return node;
         }
 
         /// <summary>
