@@ -43,11 +43,16 @@
     <Compile Include="Exceptions\InvalidNodeTypeException.cs" />
     <Compile Include="Exceptions\LexingException.cs" />
     <Compile Include="Exceptions\ParsingException.cs" />
+    <Compile Include="Exceptions\VariableNameException.cs" />
+    <Compile Include="Nodes\AssignNode.cs" />
     <Compile Include="Nodes\ASTNode.cs" />
     <Compile Include="Nodes\BinaryOperatorNode.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Nodes\CompoundNode.cs" />
+    <Compile Include="Nodes\NoOpNode.cs" />
     <Compile Include="Nodes\UnaryOperatorNode.cs" />
+    <Compile Include="Nodes\VarNode.cs" />
     <Compile Include="Visitors\Interpreter.cs" />
     <Compile Include="Visitors\LISPNotationTranslator.cs" />
     <Compile Include="Visitors\NodeVisitor.cs" />

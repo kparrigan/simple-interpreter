@@ -10,24 +10,26 @@ using SimpleInterpreter.Core.Visitors;
 
 namespace SimpleInterpreter.Core
 {
-    public class Interpreter : NodeVisitor
+    public sealed class Interpreter : NodeVisitor
     {
         private readonly Parser _parser;
+        public Dictionary<string, object> GlobalScope { get; private set; }
 
         #region Constructor
 
         public Interpreter(Parser parser)
         {
             _parser = parser;
+            GlobalScope = new Dictionary<string, object>();
         }
         #endregion
 
         #region Public
 
-        public int Interpret()
+        public object Interpret()
         {
             var tree = _parser.Parse();
-            return (int)Visit(tree);
+            return Visit(tree);
         }
         #endregion
 
@@ -69,6 +71,37 @@ namespace SimpleInterpreter.Core
                 default:
                     throw new InterpretationException($"Invalid node token type: {node.Op.Type}");
             }
+        }
+
+        private void VisitCompoundNode(CompoundNode node)
+        {
+            foreach (var child in node.Children)
+            {
+                Visit(child);
+            }
+        }
+
+        private void VisitNoOpNode(NoOpNode node)
+        {
+            return;
+        }
+
+        private void VisitAssignNode(AssignNode node)
+        {
+            var varName = node.Left.Value.ToString();
+            GlobalScope[varName] = Visit(node.Right);
+        }
+
+        private object VisitVarNode(VarNode node)
+        {
+            var varName = node.Value.ToString();
+
+            if (!GlobalScope.ContainsKey(varName))
+            {
+                throw new VariableNameException(varName);
+            }
+
+            return GlobalScope[varName];
         }
         #endregion
     }

@@ -21,18 +21,15 @@ namespace SimpleInterpreter.Test
         {
             var lexer = new Lexer("+12 3");
             var parser = new Parser(lexer);
-            var interpreter = new Interpreter(parser);
-            interpreter.Interpret();
+            parser.Parse();
 
             lexer = new Lexer("1 + ( 2 * 2");
             parser = new Parser(lexer);
-            interpreter = new Interpreter(parser);
-            interpreter.Interpret();
+            parser.Parse();
 
             lexer = new Lexer("1 + 2 * 2)");
             parser = new Parser(lexer);
-            interpreter = new Interpreter(parser);
-            interpreter.Interpret();
+            parser.Parse();
         }
     }
 }

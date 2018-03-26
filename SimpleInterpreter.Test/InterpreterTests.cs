@@ -129,5 +129,32 @@ namespace SimpleInterpreter.Test
 
             Assert.AreEqual(expected, interpreter.Interpret());
         }
+
+        [TestMethod]
+        public void Can_Evaluate_Compound_Statement()
+        {
+            const string statement =
+                @"BEGIN
+                    BEGIN
+                        number := 2;
+                        a := number;
+                        b := 10 * a + 10 * number / 4;
+                        c := a - - b
+                    END;
+                    x := 11;
+                END.";
+
+            var lexer = new Lexer(statement);
+            var parser = new Parser(lexer);
+            var interpreter = new Interpreter(parser);
+
+            var results = interpreter.Interpret();
+            Assert.AreEqual(2, (int)interpreter.GlobalScope["a"]);
+            Assert.AreEqual(11, (int)interpreter.GlobalScope["x"]);
+            Assert.AreEqual(27, (int)interpreter.GlobalScope["c"]);
+            Assert.AreEqual(25, (int)interpreter.GlobalScope["b"]);
+            Assert.AreEqual(2, (int)interpreter.GlobalScope["number"]);
+        }
+
     }
 }

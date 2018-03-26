@@ -31,27 +31,40 @@ namespace SimpleInterpreter.Core
 
         #region Public
         /// <summary>
-        /// Parses an arithmetic expression.
+        /// Parses an expression.
         /// </summary>
         /// <returns><see cref="BinaryOperatorNode"/>Root of syntax tree.</returns>
         public ASTNode Parse()
         {
-            return Expression();
+            //handling single expressions as well as compound statements
+            if (_currentToken.Type != TokenType.BEGIN)
+            {
+                return Expression();
+            }
+            else
+            {
+                var node = Program();
+
+                if (_currentToken.Type != TokenType.EOF)
+                {
+                    Error();
+                }
+
+                return node;
+            }
         }
 
         #endregion
 
         #region Private 
         /// <summary>
-        /// Parses an arithmetic expression.
+        /// Parses an expression.
         /// </summary>
         /// <returns><see cref="BinaryOperatorNode"/>Root of syntax tree.</returns>
         /// <remarks>
-        ///     expr   : term((PLUS | MINUS) term)*
-        ///     term   : factor((MUL | DIV) factor)*
-        ///     factor : INTEGER | LPAREN expr RPAREN
+        ///     factor : PLUS FACTOR | MINUS FACTOR | INTEGER | LPAREN expr RPAREN | variable
         /// </remarks>
-        /// <exception cref="InterpretationException">Thrown on errors during interpretation.</exception>
+        /// <exception cref="ParsingException">Thrown on errors during parsing.</exception>
         private ASTNode Expression()
         {
             var node = Term();
@@ -98,11 +111,13 @@ namespace SimpleInterpreter.Core
                 case TokenType.INTEGER:
                     Eat(TokenType.INTEGER);
                     return new NumberNode(token);
-                default:
+                case TokenType.LEFT_PAREN:
                     Eat(TokenType.LEFT_PAREN);
                     var node = Expression();
                     Eat(TokenType.RIGHT_PAREN);
                     return node;
+                default:
+                    return Variable();
             }
         }
 
@@ -157,6 +172,88 @@ namespace SimpleInterpreter.Core
         private void Error()
         {
             throw new ParsingException("Invalid syntax");
+        }
+
+        private CompoundNode Program()
+        {
+            var node = CompoundStatement();
+            Eat(TokenType.DOT);
+            return node;
+        }
+
+        private CompoundNode CompoundStatement()
+        {
+            Eat(TokenType.BEGIN);
+            var nodes = StatementList();
+            Eat(TokenType.END);
+
+            var root = new CompoundNode();
+            foreach(var node in nodes)
+            {
+                root.Children.Add(node);
+            }
+
+            return root;
+        }
+
+        private List<ASTNode> StatementList()
+        {
+            var results = new List<ASTNode>();
+            var node = Statement();
+
+            results.Add(node);
+
+            while (_currentToken.Type == TokenType.SEMI)
+            {
+                Eat(TokenType.SEMI);
+                results.Add(Statement());
+            }
+
+            if (_currentToken.Type == TokenType.ID)
+            {
+                Error();
+            }
+
+            return results;
+        }
+
+        private ASTNode Statement()
+        {
+            if (_currentToken.Type == TokenType.BEGIN)
+            {
+                return CompoundStatement();
+            }
+            else if (_currentToken.Type == TokenType.ID)
+            {
+                return AssignmentStatement();
+            }
+            else
+            {
+                return Empty();
+            }
+        }
+
+
+        private AssignNode AssignmentStatement()
+        {
+            var left = Variable();
+            var token = _currentToken;
+
+            Eat(TokenType.ASSIGN);
+            var right = Expression();
+            return new AssignNode(left, token, right);
+        }
+
+        private VarNode Variable()
+        {
+            var node = new VarNode(_currentToken);
+            Eat(TokenType.ID);
+            return node;
+        }
+        
+        private NoOpNode Empty()
+        {
+            return new NoOpNode();
         }
         #endregion
     }
